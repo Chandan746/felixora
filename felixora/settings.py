@@ -23,11 +23,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '7c@a$8*zk@*5(&n5g#ije*+nz%b#m0kz=201mc^ay%k&ncq9ke'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["https://felixora.herokuapp.com/"]
+ALLOWED_HOSTS = ["https://felixora-dev.herokuapp.com/"]
 
-
+SITE_URL="https://felixora-dev.herokuapp.com"
 # Application definition
 
 INSTALLED_APPS = [

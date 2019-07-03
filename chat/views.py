@@ -92,7 +92,7 @@ def c_index(request):
 @login_required
 def mainroom(request, usr_id):
 
-    img_url="https://felixora-dev.herokuapp.com"
+    img_url=settings.SITE_URL
     user_obj = UserProfileInfo.objects.get(user_id=usr_id)
     if(user_obj.profile_pic):
         usr_p_url = img_url + user_obj.profile_pic.url
