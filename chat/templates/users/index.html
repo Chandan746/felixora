@@ -1,0 +1,37 @@
+{% extends "users/base.html" %}
+{% block body_block %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Felixora a Chat Service !</h1>
+    <script> 
+    var usr_id = {{ user.id }};
+    //window.location.pathname = '/chat/' + dname + '/'+ usr_id +'/';
+    </script>
+    {% if user.is_authenticated %}
+        <h2>Hello {{ user.username }}</h2>
+        <body>
+    List of all Users are:- 
+    {%for i in All_users%}
+    {% if i != user.username %}
+    <li>
+        
+    <a class = "roomsel" href="#" data-name="{{i}}" >{{i}}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    <script>
+        $(document).on('click', '.roomsel', function(){
+            var dname = $(this).attr('data-name');
+            //console.log(dname);
+            var usr_id = {{ user.id }};
+            window.location.pathname = '/chat/' + dname + '/'+ usr_id +'/';
+        })
+    </script>
+</body>
+    {% else %}
+        <h2>Register or Login if you'd like to</h2>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
