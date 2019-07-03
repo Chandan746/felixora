@@ -47,7 +47,7 @@ var roomName = {{ room_name_json }};
 
 
     var chatSocket = new ReconnectingWebSocket(
-        'ws://' + window.location.host +
+        'wss://' + window.location.host +
         '/ws/chat/' + roomName + '/');
 
     chatSocket.onopen = function(e) {
