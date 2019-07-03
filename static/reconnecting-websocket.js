@@ -26,9 +26,9 @@
  * again.
  *
  * It is API compatible, so when you have:
- *   wss = new WebSocket('wss://....');
+ *   ws = new WebSocket('ws://....');
  * you can replace with:
- *   wss = new ReconnectingWebSocket('wss://....');
+ *   ws = new ReconnectingWebSocket('ws://....');
  *
  * The event stream will typically look like:
  *  onconnecting
@@ -77,7 +77,7 @@
  * - Whether this instance should log debug messages. Accepts true or false. Default: false.
  *
  * automaticOpen
- * - Whether or not the websocket should attempt to connect immediately upon instantiation. The socket can be manually opened or closed at any time using wss.open() and wss.close().
+ * - Whether or not the websocket should attempt to connect immediately upon instantiation. The socket can be manually opened or closed at any time using ws.open() and ws.close().
  *
  * reconnectInterval
  * - The number of milliseconds to delay before attempting to reconnect. Accepts integer. Default: 1000.
@@ -169,7 +169,7 @@
         // Private state variables
 
         var self = this;
-        var wss;
+        var ws;
         var forcedClose = false;
         var timedOut = false;
         var eventTarget = document.createElement('div');
@@ -206,8 +206,8 @@
         };
 
         this.open = function (reconnectAttempt) {
-            wss = new WebSocket(self.url, protocols || []);
-            wss.binaryType = this.binaryType;
+            ws = new WebSocket(self.url, protocols || []);
+            ws.binaryType = this.binaryType;
 
             if (reconnectAttempt) {
                 if (this.maxReconnectAttempts && this.reconnectAttempts > this.maxReconnectAttempts) {
@@ -222,7 +222,7 @@
                 console.debug('ReconnectingWebSocket', 'attempt-connect', self.url);
             }
 
-            var localWs = wss;
+            var localWs = ws;
             var timeout = setTimeout(function() {
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'connection-timeout', self.url);
@@ -232,12 +232,12 @@
                 timedOut = false;
             }, self.timeoutInterval);
 
-            wss.onopen = function(event) {
+            ws.onopen = function(event) {
                 clearTimeout(timeout);
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'onopen', self.url);
                 }
-                self.protocol = wss.protocol;
+                self.protocol = ws.protocol;
                 self.readyState = WebSocket.OPEN;
                 self.reconnectAttempts = 0;
                 var e = generateEvent('open');
@@ -246,9 +246,9 @@
                 eventTarget.dispatchEvent(e);
             };
 
-            wss.onclose = function(event) {
+            ws.onclose = function(event) {
                 clearTimeout(timeout);
-                wss = null;
+                ws = null;
                 if (forcedClose) {
                     self.readyState = WebSocket.CLOSED;
                     eventTarget.dispatchEvent(generateEvent('close'));
@@ -273,7 +273,7 @@
                     }, timeout > self.maxReconnectInterval ? self.maxReconnectInterval : timeout);
                 }
             };
-            wss.onmessage = function(event) {
+            ws.onmessage = function(event) {
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'onmessage', self.url, event.data);
                 }
@@ -281,7 +281,7 @@
                 e.data = event.data;
                 eventTarget.dispatchEvent(e);
             };
-            wss.onerror = function(event) {
+            ws.onerror = function(event) {
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'onerror', self.url, event);
                 }
@@ -300,11 +300,11 @@
          * @param data a text string, ArrayBuffer or Blob to send to the server.
          */
         this.send = function(data) {
-            if (wss) {
+            if (ws) {
                 if (self.debug || ReconnectingWebSocket.debugAll) {
                     console.debug('ReconnectingWebSocket', 'send', self.url, data);
                 }
-                return wss.send(data);
+                return ws.send(data);
             } else {
                 throw 'INVALID_STATE_ERR : Pausing to reconnect websocket';
             }
@@ -320,8 +320,8 @@
                 code = 1000;
             }
             forcedClose = true;
-            if (wss) {
-                wss.close(code, reason);
+            if (ws) {
+                ws.close(code, reason);
             }
         };
 
@@ -330,8 +330,8 @@
          * For example, if the app suspects bad data / missed heart beats, it can try to refresh.
          */
         this.refresh = function() {
-            if (wss) {
-                wss.close();
+            if (ws) {
+                ws.close();
             }
         };
     }
