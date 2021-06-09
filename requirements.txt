@@ -16,7 +16,7 @@ chardet==3.0.4
 constantly==15.1.0
 cryptography==2.7
 daphne==2.3.0
-Django==2.2.2
+Django==2.2.22
 django-emoji-picker==0.0.4
 django-emoticons==1.2
 get==2019.4.13
